@@ -49,6 +49,15 @@ UART_HandleTypeDef huart1;
 PCD_HandleTypeDef hpcd_USB_FS;
 
 /* USER CODE BEGIN PV */
+uint8_t btn_press = 0;
+
+uint16_t blink_delays[] = {
+		500,
+		250,
+		100
+};
+
+uint8_t blink_delay = 0;
 
 /* USER CODE END PV */
 
@@ -80,6 +89,12 @@ int _write(int fd, char* ptr, int len) {
       return -1;
   }
   return -1;
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	if (GPIO_Pin == BTN_Pin) {
+		btn_press = 1;
+	}
 }
 
 
@@ -133,7 +148,7 @@ int main(void)
 
 	  now = HAL_GetTick();
 
-	  if ( now - last_blink >= 500) {
+	  if ( now - last_blink >= blink_delays[blink_delay]) {
 
 		  printf("Toggle GPIO\n");
 
@@ -147,6 +162,17 @@ int main(void)
 
 		 loop_cnt = 0;
 		 last_tick = now;
+	 }
+
+	 if (btn_press == 1){
+
+		 printf("Button pressed\n");
+
+		 ++blink_delay;
+		 if(blink_delay >= sizeof(blink_delays) / sizeof(blink_delays[0]))
+			 blink_delay = 0;
+
+		 btn_press = 0;
 	 }
 
 	 ++loop_cnt;
@@ -386,10 +412,8 @@ static void MX_GPIO_Init(void)
                           |LD7_Pin|LD9_Pin|LD10_Pin|LD8_Pin
                           |LD6_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : DRDY_Pin MEMS_INT3_Pin MEMS_INT4_Pin MEMS_INT1_Pin
-                           MEMS_INT2_Pin */
-  GPIO_InitStruct.Pin = DRDY_Pin|MEMS_INT3_Pin|MEMS_INT4_Pin|MEMS_INT1_Pin
-                          |MEMS_INT2_Pin;
+  /*Configure GPIO pins : DRDY_Pin MEMS_INT3_Pin MEMS_INT4_Pin MEMS_INT2_Pin */
+  GPIO_InitStruct.Pin = DRDY_Pin|MEMS_INT3_Pin|MEMS_INT4_Pin|MEMS_INT2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
@@ -405,11 +429,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : B1_Pin */
-  GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+  /*Configure GPIO pin : BTN_Pin */
+  GPIO_InitStruct.Pin = BTN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(BTN_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
