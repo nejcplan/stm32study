@@ -131,15 +131,13 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 
-  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, 700);
-
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
   uint16_t pwm_value = 0;
-  int8_t pwm_change = 1;
+  int8_t pwm_change = 5;
 
   uint32_t now = 0, loop_cnt = 0, next_tick = 1000, next_change = 0;
 
@@ -162,11 +160,11 @@ int main(void)
 
 		  pwm_value += pwm_change;
 
-		  if(pwm_value == 0) pwm_change = 1;
-		  if(pwm_value == 800) pwm_change = -1;
+		  if(pwm_value == 0) pwm_change = 5;
+		  if(pwm_value == 3200) pwm_change = -5;
 
 
-		  next_change = now + 100;
+		  next_change = now + 10;
 	  }
 	  ++loop_cnt;
 
@@ -339,7 +337,7 @@ static void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 5999;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 799;
+  htim1.Init.Period = 3199;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -364,7 +362,7 @@ static void MX_TIM1_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 400;
+  sConfigOC.Pulse = 1600;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
@@ -418,7 +416,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 5999;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 799;
+  htim2.Init.Period = 3199;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -441,7 +439,7 @@ static void MX_TIM2_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 400;
+  sConfigOC.Pulse = 1600;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
