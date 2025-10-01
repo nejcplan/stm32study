@@ -1,0 +1,6 @@
+../LL/LL.c:12:6:ll_init	1
+../LL/LL.c:17:6:ll_gpioe_led_pe9_init	1
+../LL/LL.c:37:6:ll_gpioe_led_pe9_to_gpio_out	1
+../LL/LL.c:53:6:ll_tim1_ch1_pwm_init_1Hz	1
+../LL/LL.c:85:6:ll_tim1_ch1_pwm_start	1
+../LL/LL.c:90:6:ll_tim1_ch1_set_ccr1	2
