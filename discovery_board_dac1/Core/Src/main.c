@@ -23,6 +23,8 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <math.h>
+#include "arm_math.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -34,7 +36,7 @@
 /* USER CODE BEGIN PD */
 
 #define DMA_BUFFER_SIZE 32
-#define SAMPLE_FREQ 10000
+#define SAMPLE_FREQ 100000
 #define OUTPUT_MID 2048
 
 /* USER CODE END PD */
@@ -113,7 +115,7 @@ inline void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 static inline void do_dac(uint16_t *buffer) {
     for (int i = 0; i < DMA_BUFFER_SIZE; ++i) {
-        buffer[i] = OUTPUT_MID - ((OUTPUT_MID * cos(angle)));
+        buffer[i] = OUTPUT_MID - ((OUTPUT_MID * arm_cos_f32(angle)));
         angle += angle_change;
         if (angle >= two_pi) {
             angle -= two_pi;
@@ -401,7 +403,7 @@ static void MX_TIM6_Init(void)
   htim6.Instance = TIM6;
   htim6.Init.Prescaler = 48 - 1;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 100 - 1;
+  htim6.Init.Period = 10 - 1;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {

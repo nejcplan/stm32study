@@ -9,6 +9,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include Middlewares/ST/staiotcraft_pre_processing/Src/subdir.mk
 -include Drivers/STM32F3xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
@@ -60,8 +61,8 @@ all: main-build
 main-build: discovery_board_dac1.elf secondary-outputs
 
 # Tool invocations
-discovery_board_dac1.elf discovery_board_dac1.map: $(OBJS) $(USER_OBJS) C:\Users\Nejc\Desktop\Delo\learning\stm32study\discovery_board_dac1\STM32F303VCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "discovery_board_dac1.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Nejc\Desktop\Delo\learning\stm32study\discovery_board_dac1\STM32F303VCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="discovery_board_dac1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+discovery_board_dac1.elf discovery_board_dac1.map: $(OBJS) $(USER_OBJS) fail-specified-linker-script-missing makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	$(error unable to generate command line)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
